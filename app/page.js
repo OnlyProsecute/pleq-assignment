@@ -6,6 +6,9 @@ export default function HomePage() {
   return (
     <Main>
         <Hero/>
+        <Link href="/dashboard">
+          <span>To dashboard</span>
+        </Link>
     </Main>
   );
 }
