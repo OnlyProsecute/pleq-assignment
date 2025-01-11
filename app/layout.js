@@ -1,6 +1,8 @@
 import { Kanit } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import { AuthProvider } from "@/context/AuthContext";
+import Head from "./head"
 
 const kanit = Kanit({
   subsets: ["latin"],
@@ -35,13 +37,16 @@ export default function RootLayout({ children }) {
   )
   return (
     <html lang="en">
-      <body
-        className={`w-full max-w-[1000px] mx-auto text-sm sm:text-base min-h-screen flex flex-col text-slate-700 ${kanit.variable} antialiased`}
-      >
-        {header}
-        {children}
-        {footer}
-      </body>
+      <Head/>
+        <AuthProvider>
+          <body
+            className={`w-full max-w-[1000px] mx-auto text-sm sm:text-base min-h-screen flex flex-col text-slate-700 ${kanit.variable} antialiased`}
+          >
+            {header}
+            {children}
+            {footer}
+          </body>
+        </AuthProvider>
     </html>
   );
 }

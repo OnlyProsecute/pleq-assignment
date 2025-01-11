@@ -1,9 +1,9 @@
  'use client';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
 import React, {useContext, useState, useEffect} from 'react';
-import { auth} from '../firebase';
-
+import { auth } from '../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 const AuthContext = React.createContext();
 
@@ -26,7 +26,7 @@ export function AuthProvider({children}) {
     }
 
     function logout() {
-        setUserDataObj({});
+        setUserDataObj(null);
         setCurrentUser(null);
         return signOut(auth);
     }
@@ -38,23 +38,42 @@ export function AuthProvider({children}) {
                 setLoading(true);
                 setCurrentUser(user);
                 if(!user) {
+                    console.log("No user found");
+                    setLoading(false);
                     return;
                 }
-
-            }
             //if user exists, fetch data from firebase
+            console.log("User exists, fetching data from firebase");
+            const docRef = doc(db, 'users', user.uid);
+            const docSnap = await getDoc(docRef);
+            let firebaseData = {};
+
+            if(docSnap.exists()) {
+                console.log("Found user data!");
+                firebaseData = docSnap.data();
+                console.log(firebaseData);
+                }
+                setUserDataObj(firebaseData);
+            }
+            
             catch (err) {
                 console.log(err.message);
             }
             finally {
                 setLoading(false);
             }
-            return unsubscribe;
-        }, []);
-    }
+        });
+        return unsubscribe;
+    }, []);
 
     const value = {
-
+        currentUser,
+        userDataObj,
+        signUp,
+        login,
+        logout,
+        loading,
+        setLoading
     }
 
     return (

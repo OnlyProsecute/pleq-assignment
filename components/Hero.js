@@ -1,12 +1,12 @@
 import { Kanit } from "next/font/google";
 import Button from "./Button";
+import Link from "next/link";
 
 const kanit = Kanit({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-kanit"
 });
-
 
 export default function Hero() {
   return (
@@ -18,9 +18,13 @@ export default function Hero() {
         You&apos;re not a waste of space, why should the rooms be?
       </p>
       <div className="grid grid-cols-2 gap-4 w-fit mx-auto">
-        <Button text="Sign Up"/>
-        <Button text="Log In" Log In dark/>
-      </div>
+        <Link href="/dashboard">
+          <Button text="Sign Up"/>
+        </Link>
+        <Link href="/dashboard">
+          <Button text="Log In" Log In dark/>
+        </Link>
+        </div>
 
 
     </div>

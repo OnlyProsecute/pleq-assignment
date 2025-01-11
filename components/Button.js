@@ -7,9 +7,10 @@ const kanit = Kanit({
 });
 
 export default function Button(props) {
-    const { text, dark, full } = props;
+    const { text, dark, full, clickHandler } = props;
     return (
         <button
+            onClick={clickHandler}
             className={
                 'rounded-sm overflow-hidden duration-200 hover:opacity-60 border-2 border-solid border-slate-700 ' +
                 (dark ? 'bg-slate-700 text-white' : 'bg-white text-slate-700') +
