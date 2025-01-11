@@ -1,9 +1,10 @@
-import { Kanit } from "next/font/google";
 import "./globals.css";
+import { Kanit } from "next/font/google";
 import Link from "next/link";
-import { AuthProvider } from "@/context/AuthContext";
 import Head from "./head"
 import Header from "@/components/Header";
+import { AuthProvider } from "@/context/AuthContext";
+import { ClassroomsProvider } from "@/context/ClassroomContext";
 
 const kanit = Kanit({
   subsets: ["latin"],
@@ -21,7 +22,7 @@ export default function RootLayout({ children }) {
   const footer = (
     <footer className="p-4 sm:p-8 grid place-items-center">
       <Link href="https://caprea-media.nl">
-        <p className={`text-slate-700 ${kanit.className}`}>Caprea-Media</p>
+        <p className={`text-slate-300 ${kanit.className}`}>Caprea-Media</p>
       </Link>
     </footer> 
   )
@@ -29,13 +30,15 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <Head/>
         <AuthProvider>
-          <body
-            className={`w-full max-w-[1000px] mx-auto text-sm sm:text-base min-h-screen flex flex-col text-slate-700 ${kanit.variable} antialiased`}
-          >
-            <Header/>
-            {children}
-            {footer}
-          </body>
+          <ClassroomsProvider>  
+            <body
+              className={`w-full max-w-[1000px] mx-auto text-sm sm:text-base min-h-screen flex flex-col text-slate-700 ${kanit.variable} antialiased`}
+            >
+              <Header/>
+              {children}
+              {footer}
+            </body>
+          </ClassroomsProvider>
         </AuthProvider>
     </html>
   );

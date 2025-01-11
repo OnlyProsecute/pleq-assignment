@@ -1,53 +1,54 @@
 'use client';
 
-import { Kanit } from "next/font/google";
 import { useAuth } from "@/context/AuthContext";
+import { useClassrooms } from "@/context/ClassroomContext";
 import Login from "@/components/Login";
 import Loading from "@/components/Loading"; 
-import { useEffect } from "react";
-
-const kanit = Kanit({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  variable: "--font-kanit"
-});
+import { useEffect, useState } from "react";
+import RoomCard from "./RoomCard";
+import Button from "./Button";
 
 export default function Dashboard() {
-   
-    const {currentUser, UserDataObj, loading} = useAuth();
+    const { currentUser, UserDataObj, loading: authLoading } = useAuth();
+    const { classrooms, loading: classroomsLoading, error } = useClassrooms();
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
-        if(!currentUser || !UserDataObj) {
-            return;
+        if (currentUser && UserDataObj) {
+            setUserData(UserDataObj);
         }
-        setData(UserDataObj);
-    }, [currentUser, UserDataObj])
+    }, [currentUser, UserDataObj]);
 
-    if(loading) {
-        return <Loading/>
+    if (authLoading || classroomsLoading) {
+        return <Loading />;
     }
 
-    if(!currentUser) {
-        return <Login/>
+    if (!currentUser) {
+        return <Login />;
     }
 
-    const details = {
-    floor: 5,
-    room_number: '05A26',
+    if (error) {
+        console.log(error);
     }
 
-  return (
-    <div className="flex flex-col flex-1 gap-4 sm:gap-8 md:gap-12">
-        <div className='grid grid-cols-1 md:grid-cols-3 bg-slate-50 text-slate-700 rounded-md p-4 gap-4  custom_shadow'>
-            {Object.keys(details).map((detail, detailIndex) => {
-                return(
-                    <div key={detailIndex} className="flex flex-col gap-1 sm:gap-2">
-                        <p className={`font-medium uppercase text-size-xs sm:text-size-sm6 truncate ${kanit.className}`}>{detail.replaceAll('_', ' ')}</p>
-                        <p className={` sm:text-lg${kanit.className}`}>{details[detail]}</p>
-                    </div> 
-                )
-            })}
+    return (
+        <div className="w-full mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                
+                {classrooms.map((room) => (
+                    <RoomCard 
+                        key={room.id} 
+                        image={room.image} 
+                        details={{
+                            building: room.building,
+                            floor: room.floor,
+                            room_number: room.room_number,
+                            availability: room.availability,
+                        }} 
+                    />
+                ))}
+                
+            </div>
         </div>
-    </div>
-    )
+    );
 }

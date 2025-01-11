@@ -9,7 +9,7 @@ const kanit = Kanit({
 
 export default function Hero() {
   return (
-    <div className='py-4 md:py-10 flex flex-col gap-4 sm:gap-8'>
+    <div className='py-4 md:py-10 flex flex-col gap-4 sm:gap-8 just'>
       <h1 className={`text-5xl sm:text-6xl md:text-7xl text-center ${kanit.className}`}>
         <span className="textGradient">Pleq</span> helps you find your <span className="textGradient">favourite</span> classrooms!
       </h1>
