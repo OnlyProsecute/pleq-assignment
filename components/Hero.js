@@ -1,6 +1,5 @@
 import { Kanit } from "next/font/google";
-import Button from "./Button";
-import Link from "next/link";
+import CallToAction from "./CallToAction";
 
 const kanit = Kanit({
   subsets: ["latin"],
@@ -17,16 +16,7 @@ export default function Hero() {
       <p className="text-lg sm:text-xl md:text-2xl text-center w-full mx-auto max-w-[700px] ">
         You&apos;re not a waste of space, why should the rooms be?
       </p>
-      <div className="grid grid-cols-2 gap-4 w-fit mx-auto">
-        <Link href="/dashboard">
-          <Button text="Sign Up"/>
-        </Link>
-        <Link href="/dashboard">
-          <Button text="Log In" Log In dark/>
-        </Link>
-        </div>
-
-
+      <CallToAction/>
     </div>
   )
 }
