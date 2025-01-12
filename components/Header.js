@@ -20,7 +20,7 @@ export default function Header() {
 
     let logoutButton = (
         <div className="flex items-center justify-between">
-            <Button text="LOG OUT" clickHandler={logout}/>
+            <Button dark text="LOG OUT" clickHandler={logout}/>
         </div>
     )
 
