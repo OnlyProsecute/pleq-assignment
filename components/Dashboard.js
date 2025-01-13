@@ -11,9 +11,10 @@ import Button from "./Button";
 
 export default function Dashboard() {
     const { currentUser, UserDataObj, loading: authLoading } = useAuth();
-    const { classrooms, loading: classroomsLoading, error, addClassroom, deleteClassroom } = useClassrooms();
+    const { classrooms, loading: classroomsLoading, error, addClassroom, deleteClassroom, editClassroom } = useClassrooms();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState(null);
     const [userData, setUserData] = useState(null);
 
@@ -26,6 +27,11 @@ export default function Dashboard() {
     const openConfirmModal = (room) => {
         setSelectedRoom(room);
         setIsConfirmModalOpen(true);
+    };
+
+    const openEditModal = (room) => {
+        setSelectedRoom(room);
+        setIsEditModalOpen(true);
     };
 
     if (authLoading || classroomsLoading) {
@@ -47,22 +53,22 @@ export default function Dashboard() {
             </div>
             {/* Modal to add a classroom */}
             {isModalOpen && (
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <h2 className="text-2xl font-bold mb-6 text-center">Add Classroom</h2>
-                <form
-                    className="space-y-4"
-                    onSubmit={(e) => {
-                        e.preventDefault();
-                        const classroomData = {
-                            availability: e.target.field1.value === 'true',
-                            room_number: e.target.field2.value,
-                            floor: e.target.field3.value,
-                            building: e.target.field4.value,
-                        };
-                        addClassroom(classroomData);
-                        setIsModalOpen(false);
-                    }}
-                >
+                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                    <h2 className="text-2xl font-bold mb-6 text-center">Add Classroom</h2>
+                    <form
+                        className="space-y-4"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            const classroomData = {
+                                availability: e.target.field1.value === 'true',
+                                room_number: e.target.field2.value,
+                                floor: e.target.field3.value,
+                                building: e.target.field4.value,
+                            };
+                            addClassroom(classroomData);
+                            setIsModalOpen(false);
+                        }}
+                    >
                     <div>
                         <label htmlFor="field1" className="block text-sm font-medium text-gray-700">
                             Classroom Available?
@@ -121,32 +127,114 @@ export default function Dashboard() {
                 </form>
             </Modal>
         )}
-
-            {/* Confirmation modal for deletion of classroom */}
-            {isConfirmModalOpen && (
-                <Modal isOpen={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
-                    <h2 className="text-lg font-semibold text-center">
-                        Are you sure you want to delete classroom {selectedRoom?.room_number}?
-                    </h2>
-                    <div className="flex justify-center mt-2">
-                        <button
-                            onClick={() => setIsConfirmModalOpen(false)}
-                            className="mx-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+        {/* Modal to edit a classroom */}
+        {isEditModalOpen && selectedRoom && (
+            <Modal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)}>
+                <h2 className="text-2xl font-bold mb-6 text-center">Edit Classroom</h2>
+                <form
+                    className="space-y-4"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        const classroomData = {
+                            id: selectedRoom.id,
+                            availability: e.target.field1.value === 'true',
+                            room_number: e.target.field2.value,
+                            floor: e.target.field3.value,
+                            building: e.target.field4.value,
+                        };
+                        editClassroom(selectedRoom.id, classroomData);
+                        setIsEditModalOpen(false);
+                    }}
+                >
+                    <div>
+                        <label htmlFor="field1" className="block text-sm font-medium text-gray-700">
+                            Classroom Available?
+                        </label>
+                        <select
+                            id="field1"
+                            name="field1"
+                            defaultValue={selectedRoom.availability.toString()}
+                            className="w-full mx-auto px-3 duration-200 hover:border-slate-600 focus:border-slate-600 py-2 sm:py-3 border border-solid border-slate-400 rounded-sm outline-none"
                         >
-                            Cancel
-                        </button>
-                        <button
-                            onClick={() => {
-                                deleteClassroom(selectedRoom.id);
-                                setIsConfirmModalOpen(false);
-                            }}
-                            className="mx-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
-                        >
-                            Confirm
-                        </button>
+                            <option value="true">Yes</option>
+                            <option value="false">No</option>
+                        </select>
                     </div>
-                </Modal>
-            )}
+                    <div>
+                        <label htmlFor="field2" className="block text-sm font-medium text-gray-700">
+                            Room Number
+                        </label>
+                        <input
+                            id="field2"
+                            name="field2"
+                            type="text"
+                            defaultValue={selectedRoom.room_number}
+                            placeholder="I.e. 06A23"
+                            className="w-full mx-auto px-3 duration-200 hover:border-slate-600 focus:border-slate-600 py-2 sm:py-3 border border-solid border-slate-400 rounded-sm outline-none"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="field3" className="block text-sm font-medium text-gray-700">
+                            Floor
+                        </label>
+                        <input
+                            id="field3"
+                            name="field3"
+                            type="text"
+                            defaultValue={selectedRoom.floor}
+                            placeholder="I.e. 5"
+                            className="w-full mx-auto px-3 duration-200 hover:border-slate-600 focus:border-slate-600 py-2 sm:py-3 border border-solid border-slate-400 rounded-sm outline-none"
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="field4" className="block text-sm font-medium text-gray-700">
+                            Building
+                        </label>
+                        <select
+                            id="field4"
+                            name="field4"
+                            defaultValue={selectedRoom.building}
+                            className="w-full mx-auto px-3 duration-200 hover:border-slate-600 focus:border-slate-600 py-2 sm:py-3 border border-solid border-slate-400 rounded-sm outline-none"
+                        >
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <div className="text-white">
+                        <Button type="submit" text="Submit" dark full />
+                    </div>
+                </form>
+            </Modal>
+        )}
+
+
+        {/* Confirmation modal for deletion of classroom */}
+        {isConfirmModalOpen && (
+            <Modal isOpen={isConfirmModalOpen} onClose={() => setIsConfirmModalOpen(false)}>
+                <h2 className="text-lg font-semibold text-center">
+                    Are you sure you want to delete classroom {selectedRoom?.room_number}?
+                </h2>
+                <div className="flex justify-center mt-2">
+                    <button
+                        onClick={() => setIsConfirmModalOpen(false)}
+                        className="mx-2 px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={() => {
+                            deleteClassroom(selectedRoom.id);
+                            setIsConfirmModalOpen(false);
+                        }}
+                        className="mx-2 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                    >
+                        Confirm
+                    </button>
+                </div>
+            </Modal>
+        )}
 
     
             {/* Room Cards*/}
@@ -163,6 +251,7 @@ export default function Dashboard() {
                                     availability: room.availability,
                                 }}
                                 onDelete={() => openConfirmModal(room)}
+                                onEdit={() => openEditModal(room)}
                             />
                         </div>
                     ))}

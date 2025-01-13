@@ -11,7 +11,7 @@ const kanit = Kanit({
 });
 
 export default function RoomCard(props) {
-    const { details, onDelete } = props;
+    const { details, onDelete, onEdit } = props;
     let availability = 'Unavailable';
 
     if (details.availability) {
@@ -34,6 +34,12 @@ export default function RoomCard(props) {
                     onClick={onDelete}
                 >
                     X
+                </button>
+                <button 
+                    className="absolute top-0 right-0 translate-x-[80%] translate-y-[25%] bg-slate-700 text-white w-10 h-10 rounded-full shadow-lg hover:opacity-60"
+                    onClick={onEdit}
+                >
+                    E
                 </button>
             </div>
 

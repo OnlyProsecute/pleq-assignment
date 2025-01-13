@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { collection, getDocs, addDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../firebase';
 
 const ClassroomsContext = createContext();
@@ -53,11 +53,23 @@ export function ClassroomsProvider({ children }) {
     async function deleteClassroom(classroomId) {
         try {
             const classroomDocRef = doc(db, 'Classrooms', classroomId);
-            await deleteDoc(classroomDocRef); 
+            await deleteDoc(classroomDocRef);
             console.log(`Classroom with ID ${classroomId} deleted`);
             fetchClassrooms();
         } catch (err) {
             console.error('Error deleting classroom:', err);
+            setError(err.message);
+        }
+    }
+
+    async function editClassroom(classroomId, updatedData) {
+        try {
+            const classroomDocRef = doc(db, 'Classrooms', classroomId);
+            await updateDoc(classroomDocRef, updatedData);
+            console.log(`Classroom with ID ${classroomId} updated`);
+            fetchClassrooms();
+        } catch (err) {
+            console.error('Error updating classroom:', err);
             setError(err.message);
         }
     }
@@ -73,6 +85,7 @@ export function ClassroomsProvider({ children }) {
         fetchClassrooms,
         addClassroom,
         deleteClassroom,
+        editClassroom,
     };
 
     return (
